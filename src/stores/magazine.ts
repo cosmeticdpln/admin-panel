@@ -159,11 +159,24 @@ export const useMagazineStore = defineStore('magazine', () => {
 
   const fetchProducts = async (search: string = '') => {
     try {
-      const response = await axios.get('/api/v1/admin/magazines/0/products', {
-        params: { search }
-      })
+      console.log('Fetching products with search:', search)
+      // Try the admin magazines products endpoint first
+      let response
+      try {
+        response = await axios.get('/api/v1/admin/magazines/0/products', {
+          params: { search }
+        })
+      } catch (adminErr) {
+        console.log('Admin products endpoint failed, trying public products endpoint')
+        // Fallback to public products endpoint
+        response = await axios.get('/api/v1/products-list', {
+          params: { search }
+        })
+      }
+      console.log('Products API response:', response.data)
       products.value = response.data
     } catch (err: any) {
+      console.error('Error fetching products:', err)
       error.value = err.response?.data?.message || 'خطا در دریافت محصولات'
       throw err
     }

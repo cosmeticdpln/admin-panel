@@ -205,7 +205,7 @@
               <div class="mb-2 flex gap-2">
                 <button
                   type="button"
-                  @click="handleImageUpload"
+                  @click="handleImageUpload(index)"
                   class="px-3 py-1 bg-primary-600 text-white text-sm rounded hover:bg-primary-700 flex items-center gap-1"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,7 +226,7 @@
           
           <div class="flex justify-between items-center">
             <div>
-              <label class="block text-sm font-medium text-dark-300 mb-2">Sort Order</label>
+              <label class="block text-sm font-medium text-dark-300 mb-2">ترتیب نمایش</label>
               <input
                 v-model.number="section.sort_order"
                 type="number"
@@ -243,7 +243,7 @@
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
               </svg>
-              {{ section.showProducts ? 'Hide' : 'Manage' }} Products
+              {{ section.showProducts ? 'مخفی کردن' : 'مدیریت' }} محصولات
             </button>
           </div>
           
@@ -393,7 +393,7 @@ const toolbarConfig = [
 ]
 
 // Custom image upload handler
-const handleImageUpload = async () => {
+const handleImageUpload = async (sectionIndex?: number) => {
   const input = document.createElement('input')
   input.setAttribute('type', 'file')
   input.setAttribute('accept', 'image/*')
@@ -414,9 +414,19 @@ const handleImageUpload = async () => {
         })
         
         if (response.data.success) {
-          // Insert image into editor
+          // Insert image into the correct editor
           const imageUrl = response.data.url
-          const editor = document.querySelector('.ql-editor') as HTMLElement
+          let editor: HTMLElement | null = null
+          
+          if (sectionIndex !== undefined) {
+            // Find the section editor
+            const sectionEditors = document.querySelectorAll('.ql-editor')
+            editor = sectionEditors[sectionIndex + 1] as HTMLElement // +1 because first is main content
+          } else {
+            // Find the main content editor
+            editor = document.querySelector('.ql-editor') as HTMLElement
+          }
+          
           if (editor) {
             const img = document.createElement('img')
             img.src = imageUrl
@@ -427,11 +437,11 @@ const handleImageUpload = async () => {
             editor.appendChild(img)
           }
         } else {
-          alert('Image upload failed')
+          alert('آپلود تصویر ناموفق بود')
         }
       } catch (error) {
         console.error('Image upload failed:', error)
-        alert('Image upload failed: ' + error)
+        alert('آپلود تصویر ناموفق بود: ' + error)
       }
     }
   }
@@ -444,12 +454,24 @@ watch(() => props.magazine, (magazine) => {
   if (magazine) {
     Object.assign(form, {
       ...magazine,
-      sections: magazine.sections?.map(section => ({
-        ...section,
-        showProducts: false,
-        products: section.products || []
-      })) || []
+      sections: magazine.sections?.map(section => {
+        // Transform products from pivot format to form format
+        const transformedProducts = section.products?.map(product => ({
+          product_id: product.id,
+          title: product.pivot?.title || '',
+          description: product.pivot?.description || '',
+          sort_order: product.pivot?.sort_order || 0
+        })) || []
+        
+        return {
+          ...section,
+          showProducts: transformedProducts.length > 0, // Show products section if products exist
+          products: transformedProducts
+        }
+      }) || []
     })
+    console.log('Initialized form with magazine data:', form)
+    console.log('Sections with products:', form.sections?.filter(s => s.products && s.products.length > 0))
   }
 }, { immediate: true })
 
@@ -469,7 +491,31 @@ const removeSection = (index: number) => {
 }
 
 const toggleProductsSection = (index: number) => {
-  form.sections![index].showProducts = !form.sections![index].showProducts
+  const section = form.sections![index]
+  section.showProducts = !section.showProducts
+  
+  console.log('Toggling products section:', index, 'showProducts:', section.showProducts)
+  console.log('Current products:', section.products)
+  
+  // If showing products section and no products exist, add one automatically
+  if (section.showProducts && (!section.products || section.products.length === 0)) {
+    console.log('Adding first product to section')
+    // Create a new products array to ensure reactivity
+    const newProducts = [{
+      product_id: 0,
+      title: '',
+      description: '',
+      sort_order: 0
+    }]
+    
+    // Update the section with the new products array
+    form.sections![index] = {
+      ...section,
+      products: newProducts
+    }
+    
+    console.log('Products after adding:', form.sections![index].products)
+  }
 }
 
 const addProductToSection = (sectionIndex: number) => {
@@ -501,6 +547,9 @@ const handleSubmit = async () => {
       }))
     }
     
+    console.log('Submitting magazine data:', submitData)
+    console.log('Sections with products being submitted:', submitData.sections?.filter(s => s.products && s.products.length > 0))
+    
     emit('submit', submitData)
   } finally {
     isLoading.value = false
@@ -508,9 +557,15 @@ const handleSubmit = async () => {
 }
 
 onMounted(async () => {
-  await Promise.all([
-    fetchCategories(),
-    fetchProducts()
-  ])
+  try {
+    await Promise.all([
+      fetchCategories(),
+      fetchProducts()
+    ])
+    console.log('Products loaded:', products.value)
+    console.log('Categories loaded:', categories.value)
+  } catch (error) {
+    console.error('Error loading data:', error)
+  }
 })
 </script>
