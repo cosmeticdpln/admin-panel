@@ -10,7 +10,12 @@ echo "Building Vue app for production..."
 npm run build
 
 echo "Restarting PM2 process..."
-pm2 restart vue-admin-panel
+if pm2 list | grep -q "vue-admin-panel"; then
+  pm2 restart vue-admin-panel
+else
+  echo "PM2 process not found, starting new process..."
+  pm2 start "npm run preview" --name vue-admin-panel
+fi
 
 echo "Saving PM2 process list..."
 pm2 save
