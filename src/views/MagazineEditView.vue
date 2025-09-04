@@ -11,8 +11,8 @@
         </svg>
       </router-link>
       <div>
-        <h1 class="text-2xl font-bold text-white">Edit Magazine</h1>
-        <p class="text-dark-400">Update magazine information and content</p>
+        <h1 class="text-2xl font-bold text-white">ویرایش مجله</h1>
+        <p class="text-dark-400">به‌روزرسانی اطلاعات و محتوای مجله</p>
       </div>
     </div>
 
@@ -62,7 +62,7 @@ const handleSubmit = async (data: Partial<Magazine>) => {
     await updateMagazine(magazine.value!.id!, data)
     router.push('/magazines')
   } catch (err: any) {
-    submitError.value = err.message || 'Failed to update magazine'
+    submitError.value = err.message || 'خطا در به‌روزرسانی مجله'
   }
 }
 
@@ -71,7 +71,7 @@ onMounted(async () => {
   try {
     magazine.value = await fetchMagazine(magazineId)
   } catch (err) {
-    console.error('Failed to fetch magazine:', err)
+    console.error('خطا در دریافت مجله:', err)
   }
 })
 </script>

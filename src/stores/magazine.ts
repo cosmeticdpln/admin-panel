@@ -70,7 +70,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       const response = await axios.get('/api/v1/admin/magazines', { params })
       magazines.value = response.data.data || response.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to fetch magazines'
+      error.value = err.response?.data?.message || 'خطا در دریافت مجلات'
       throw err
     } finally {
       isLoading.value = false
@@ -85,7 +85,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       currentMagazine.value = response.data
       return response.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to fetch magazine'
+      error.value = err.response?.data?.message || 'خطا در دریافت مجله'
       throw err
     } finally {
       isLoading.value = false
@@ -101,7 +101,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       magazines.value.unshift(newMagazine)
       return newMagazine
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to create magazine'
+      error.value = err.response?.data?.message || 'خطا در ایجاد مجله'
       throw err
     } finally {
       isLoading.value = false
@@ -123,7 +123,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       }
       return updatedMagazine
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to update magazine'
+      error.value = err.response?.data?.message || 'خطا در به‌روزرسانی مجله'
       throw err
     } finally {
       isLoading.value = false
@@ -140,7 +140,7 @@ export const useMagazineStore = defineStore('magazine', () => {
         currentMagazine.value = null
       }
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to delete magazine'
+      error.value = err.response?.data?.message || 'خطا در حذف مجله'
       throw err
     } finally {
       isLoading.value = false
@@ -152,7 +152,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       const response = await axios.get('/api/v1/admin/magazines/0/categories')
       categories.value = response.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to fetch categories'
+      error.value = err.response?.data?.message || 'خطا در دریافت دسته‌بندی‌ها'
       throw err
     }
   }
@@ -164,7 +164,7 @@ export const useMagazineStore = defineStore('magazine', () => {
       })
       products.value = response.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to fetch products'
+      error.value = err.response?.data?.message || 'خطا در دریافت محصولات'
       throw err
     }
   }

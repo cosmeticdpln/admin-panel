@@ -2,21 +2,21 @@
   <form @submit.prevent="handleSubmit" class="space-y-6">
     <!-- Basic Information -->
     <div class="bg-dark-800 rounded-lg p-6">
-      <h3 class="text-lg font-semibold text-white mb-4">Basic Information</h3>
+      <h3 class="text-lg font-semibold text-white mb-4">اطلاعات پایه</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-dark-300 mb-2">Title *</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">عنوان *</label>
           <input
             v-model="form.title"
             type="text"
             required
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            placeholder="Enter magazine title"
+            placeholder="عنوان مجله را وارد کنید"
           />
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-dark-300 mb-2">Slug</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">نامک</label>
           <input
             v-model="form.slug"
             type="text"
@@ -26,12 +26,12 @@
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-dark-300 mb-2">Category</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">دسته‌بندی</label>
           <select
             v-model="form.magazine_category_id"
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
-            <option value="">Select a category</option>
+            <option value="">انتخاب دسته‌بندی</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
@@ -39,12 +39,12 @@
         </div>
         
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-dark-300 mb-2">Excerpt</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">خلاصه</label>
           <textarea
             v-model="form.excerpt"
             rows="3"
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            placeholder="Brief description of the magazine"
+            placeholder="توضیح کوتاه مجله"
           ></textarea>
         </div>
       </div>
@@ -52,9 +52,9 @@
 
     <!-- Content -->
     <div class="bg-dark-800 rounded-lg p-6">
-      <h3 class="text-lg font-semibold text-white mb-4">Content</h3>
+      <h3 class="text-lg font-semibold text-white mb-4">محتوا</h3>
       <div>
-        <label class="block text-sm font-medium text-dark-300 mb-2">Main Content *</label>
+        <label class="block text-sm font-medium text-dark-300 mb-2">محتوای اصلی *</label>
         <div class="quill-editor-dark">
           <div class="mb-2 flex gap-2">
             <button
@@ -65,7 +65,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
-              Upload Image
+              آپلود تصویر
             </button>
           </div>
           <QuillEditor
@@ -81,7 +81,7 @@
 
     <!-- Settings -->
     <div class="bg-dark-800 rounded-lg p-6">
-      <h3 class="text-lg font-semibold text-white mb-4">Settings</h3>
+      <h3 class="text-lg font-semibold text-white mb-4">تنظیمات</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <label class="flex items-center">
@@ -90,7 +90,7 @@
               type="checkbox"
               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-dark-600 rounded bg-dark-700"
             />
-            <span class="ml-2 text-sm text-dark-300">Visible to public</span>
+            <span class="ml-2 text-sm text-dark-300">قابل مشاهده برای عموم</span>
           </label>
           
           <label class="flex items-center">
@@ -99,7 +99,7 @@
               type="checkbox"
               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-dark-600 rounded bg-dark-700"
             />
-            <span class="ml-2 text-sm text-dark-300">Featured magazine</span>
+            <span class="ml-2 text-sm text-dark-300">مجله ویژه</span>
           </label>
           
           <label class="flex items-center">
@@ -108,13 +108,13 @@
               type="checkbox"
               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-dark-600 rounded bg-dark-700"
             />
-            <span class="ml-2 text-sm text-dark-300">Offerable</span>
+            <span class="ml-2 text-sm text-dark-300">قابل پیشنهاد</span>
           </label>
         </div>
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-dark-300 mb-2">Sort Order</label>
+            <label class="block text-sm font-medium text-dark-300 mb-2">ترتیب نمایش</label>
             <input
               v-model.number="form.sort_order"
               type="number"
@@ -124,7 +124,7 @@
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-dark-300 mb-2">Published Date</label>
+            <label class="block text-sm font-medium text-dark-300 mb-2">تاریخ انتشار</label>
             <input
               v-model="form.published_at"
               type="datetime-local"
@@ -138,7 +138,7 @@
     <!-- Sections -->
     <div class="bg-dark-800 rounded-lg p-6">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-white">Sections</h3>
+        <h3 class="text-lg font-semibold text-white">بخش‌ها</h3>
         <button
           type="button"
           @click="addSection"
@@ -147,12 +147,12 @@
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
-          Add Section
+          افزودن بخش
         </button>
       </div>
       
       <div v-if="form.sections.length === 0" class="text-center py-8 text-dark-500">
-        <p>No sections added yet. Click "Add Section" to get started.</p>
+        <p>هنوز بخشی اضافه نشده است. برای شروع روی "افزودن بخش" کلیک کنید.</p>
       </div>
       
       <div v-else class="space-y-4">
@@ -162,7 +162,7 @@
           class="border border-dark-600 rounded-lg p-4"
         >
           <div class="flex justify-between items-start mb-4">
-            <h4 class="text-md font-medium text-white">Section {{ index + 1 }}</h4>
+            <h4 class="text-md font-medium text-white">بخش {{ index + 1 }}</h4>
             <button
               type="button"
               @click="removeSection(index)"
@@ -176,23 +176,23 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-medium text-dark-300 mb-2">Section Title *</label>
+              <label class="block text-sm font-medium text-dark-300 mb-2">عنوان بخش *</label>
               <input
                 v-model="section.title"
                 type="text"
                 required
                 class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="Enter section title"
+                placeholder="عنوان بخش را وارد کنید"
               />
             </div>
             
             <div>
-              <label class="block text-sm font-medium text-dark-300 mb-2">Content Type</label>
+              <label class="block text-sm font-medium text-dark-300 mb-2">نوع محتوا</label>
               <select
                 v-model="section.content_type"
                 class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="text">Text</option>
+                <option value="text">متن</option>
                 <option value="html">HTML</option>
                 <option value="markdown">Markdown</option>
               </select>
@@ -200,7 +200,7 @@
           </div>
           
           <div class="mb-4">
-            <label class="block text-sm font-medium text-dark-300 mb-2">Section Content *</label>
+            <label class="block text-sm font-medium text-dark-300 mb-2">محتوای بخش *</label>
             <div class="quill-editor-dark">
               <div class="mb-2 flex gap-2">
                 <button
@@ -250,7 +250,7 @@
           <!-- Products Section -->
           <div v-if="section.showProducts" class="mt-4 pt-4 border-t border-dark-600">
             <div class="flex justify-between items-center mb-4">
-              <h5 class="text-sm font-medium text-white">Products in this section</h5>
+              <h5 class="text-sm font-medium text-white">محصولات در این بخش</h5>
               <button
                 type="button"
                 @click="addProductToSection(index)"
@@ -259,7 +259,7 @@
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Add Product
+                افزودن محصول
               </button>
             </div>
             
@@ -273,7 +273,7 @@
                   v-model="product.product_id"
                   class="flex-1 px-3 py-2 bg-dark-600 border border-dark-500 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
-                  <option value="">Select a product</option>
+                  <option value="">انتخاب محصول</option>
                   <option v-for="productOption in products" :key="productOption.id" :value="productOption.id">
                     {{ productOption.name }}
                   </option>
@@ -281,14 +281,14 @@
                 <input
                   v-model="product.title"
                   type="text"
-                  placeholder="Custom title"
+                  placeholder="عنوان سفارشی"
                   class="flex-1 px-3 py-2 bg-dark-600 border border-dark-500 rounded text-white text-sm placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <input
                   v-model.number="product.sort_order"
                   type="number"
                   min="0"
-                  placeholder="Order"
+                  placeholder="ترتیب"
                   class="w-20 px-3 py-2 bg-dark-600 border border-dark-500 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <button
@@ -304,7 +304,7 @@
             </div>
             
             <div v-else class="text-center py-4 text-dark-500 text-sm">
-              No products added to this section yet.
+              هنوز محصولی به این بخش اضافه نشده است.
             </div>
           </div>
         </div>
@@ -317,14 +317,14 @@
         to="/magazines"
         class="px-6 py-2 border border-dark-600 text-dark-300 rounded-lg hover:bg-dark-700 transition-colors"
       >
-        Cancel
+        انصراف
       </router-link>
       <button
         type="submit"
         :disabled="isLoading"
         class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {{ isLoading ? 'Saving...' : (isEdit ? 'Update' : 'Create') }} Magazine
+        {{ isLoading ? 'در حال ذخیره...' : (isEdit ? 'به‌روزرسانی' : 'ایجاد') }} مجله
       </button>
     </div>
   </form>

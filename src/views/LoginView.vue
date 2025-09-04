@@ -14,10 +14,10 @@
           </svg>
         </div>
         <h2 class="text-4xl font-bold text-white mb-2">
-          Welcome Back
+          آهو خانوم
         </h2>
         <p class="text-dark-300 text-lg">
-          Sign in to your admin dashboard
+          خوش آمدید - پنل مدیریت
         </p>
       </div>
       
@@ -27,7 +27,7 @@
           <div class="space-y-4">
             <div>
               <label for="email" class="block text-sm font-medium text-dark-200 mb-2">
-                Email Address
+                آدرس ایمیل
               </label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -43,14 +43,14 @@
                   autocomplete="email"
                   required
                   class="block w-full pl-10 pr-3 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                  placeholder="Enter your email"
+                  placeholder="ایمیل خود را وارد کنید"
                 />
               </div>
             </div>
             
             <div>
               <label for="password" class="block text-sm font-medium text-dark-200 mb-2">
-                Password
+                رمز عبور
               </label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -66,7 +66,7 @@
                   autocomplete="current-password"
                   required
                   class="block w-full pl-10 pr-3 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                  placeholder="Enter your password"
+                  placeholder="رمز عبور خود را وارد کنید"
                 />
               </div>
             </div>
@@ -105,9 +105,9 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                 </svg>
-                Sign In
+                ورود
               </span>
-              <span v-else>Signing in...</span>
+              <span v-else>در حال ورود...</span>
             </button>
           </div>
         </form>

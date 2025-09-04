@@ -11,8 +11,8 @@
         </svg>
       </router-link>
       <div>
-        <h1 class="text-2xl font-bold text-white">Create Magazine</h1>
-        <p class="text-dark-400">Add a new magazine to your collection</p>
+        <h1 class="text-2xl font-bold text-white">ایجاد مجله</h1>
+        <p class="text-dark-400">مجله جدیدی به مجموعه خود اضافه کنید</p>
       </div>
     </div>
 
@@ -53,7 +53,7 @@ const handleSubmit = async (data: Partial<Magazine>) => {
     await createMagazine(data)
     router.push('/magazines')
   } catch (err: any) {
-    error.value = err.message || 'Failed to create magazine'
+    error.value = err.message || 'خطا در ایجاد مجله'
   }
 }
 </script>

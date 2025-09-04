@@ -3,8 +3,8 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-white">Magazines</h1>
-        <p class="text-dark-400">Manage your magazine content</p>
+        <h1 class="text-2xl font-bold text-white">مجلات</h1>
+        <p class="text-dark-400">مدیریت محتوای مجلات</p>
       </div>
       <router-link
         to="/magazines/create"
@@ -13,7 +13,7 @@
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
-        Create Magazine
+        ایجاد مجله
       </router-link>
     </div>
 
@@ -21,38 +21,38 @@
     <div class="bg-dark-800 rounded-lg p-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium text-dark-300 mb-2">Search</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">جستجو</label>
           <input
             v-model="filters.search"
             type="text"
-            placeholder="Search magazines..."
+            placeholder="جستجو در مجلات..."
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             @input="debouncedSearch"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-dark-300 mb-2">Category</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">دسته‌بندی</label>
           <select
             v-model="filters.category_id"
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             @change="applyFilters"
           >
-            <option value="">All Categories</option>
+            <option value="">همه دسته‌بندی‌ها</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
             </option>
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-dark-300 mb-2">Visibility</label>
+          <label class="block text-sm font-medium text-dark-300 mb-2">نمایان بودن</label>
           <select
             v-model="filters.is_visible"
             class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             @change="applyFilters"
           >
-            <option value="">All</option>
-            <option value="1">Visible</option>
-            <option value="0">Hidden</option>
+            <option value="">همه</option>
+            <option value="1">نمایان</option>
+            <option value="0">مخفی</option>
           </select>
         </div>
       </div>
@@ -93,13 +93,13 @@
                   <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                   </svg>
-                  {{ magazine.category?.name || 'No Category' }}
+                  {{ magazine.category?.name || 'بدون دسته‌بندی' }}
                 </span>
                 <span class="flex items-center">
                   <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                   </svg>
-                  {{ magazine.sections?.length || 0 }} sections
+                  {{ magazine.sections?.length || 0 }} بخش
                 </span>
               </div>
             </div>
@@ -109,13 +109,13 @@
                 v-if="magazine.is_featured"
                 class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-900 text-yellow-200"
               >
-                Featured
+                ویژه
               </span>
               <span
                 :class="magazine.is_visible ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'"
                 class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
               >
-                {{ magazine.is_visible ? 'Visible' : 'Hidden' }}
+                {{ magazine.is_visible ? 'نمایان' : 'مخفی' }}
               </span>
             </div>
           </div>
@@ -152,8 +152,8 @@
       <svg class="mx-auto h-12 w-12 text-dark-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-dark-400">No magazines found</h3>
-      <p class="mt-1 text-sm text-dark-500">Get started by creating a new magazine.</p>
+      <h3 class="mt-2 text-sm font-medium text-dark-400">هیچ مجله‌ای یافت نشد</h3>
+      <p class="mt-1 text-sm text-dark-500">با ایجاد مجله جدید شروع کنید.</p>
     </div>
   </div>
 </template>

@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
       console.log(userData)
       // Check if user has admin or editor role
       if (!['admin', 'editor'].includes(userData.role)) {
-        throw new Error('Access denied. Admin or editor role required.')
+        throw new Error('دسترسی رد شد. نقش مدیر یا ویراستار مورد نیاز است.')
       }
 
       user.value = userData
@@ -54,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Login error:', error)
       return {
         success: false,
-        message: error.response?.data?.message || error.message || 'Login failed'
+        message: error.response?.data?.message || error.message || 'ورود ناموفق'
       }
     } finally {
       isLoading.value = false
@@ -75,7 +75,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await axios.get<User>('/api/v1/user')
       user.value = response.data
     } catch (error) {
-      console.error('Failed to fetch user:', error)
+      console.error('خطا در دریافت اطلاعات کاربر:', error)
       logout()
     }
   }
