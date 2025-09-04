@@ -4,7 +4,7 @@ echo "Pulling latest changes from Git..."
 git pull origin main
 
 echo "Installing dependencies..."
-npm install
+npm install --legacy-peer-deps
 
 echo "Building Vue app for production..."
 npm run build
