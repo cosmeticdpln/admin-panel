@@ -9,6 +9,7 @@ export interface MagazineSection {
   content_type: 'text' | 'html' | 'markdown'
   sort_order: number
   products?: MagazineSectionProduct[]
+  showProducts?: boolean
 }
 
 export interface MagazineSectionProduct {
@@ -16,6 +17,18 @@ export interface MagazineSectionProduct {
   title?: string
   description?: string
   sort_order: number
+}
+
+export interface ApiProduct {
+  id: number
+  name: string
+  slug: string
+  price: string
+  pivot?: {
+    title?: string
+    description?: string
+    sort_order: number
+  }
 }
 
 export interface Magazine {

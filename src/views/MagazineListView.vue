@@ -123,7 +123,7 @@
         
         <div class="px-6 py-4 bg-dark-700 border-t border-dark-600 flex items-center justify-between">
           <div class="text-sm text-dark-400">
-            {{ formatDate(magazine.created_at) }}
+            {{ formatDate(magazine.created_at || '') }}
           </div>
           <div class="flex items-center space-x-2">
             <router-link

@@ -59,7 +59,7 @@
           <div class="mb-2 flex gap-2">
             <button
               type="button"
-              @click="handleImageUpload"
+              @click="() => handleImageUpload()"
               class="px-3 py-1 bg-primary-600 text-white text-sm rounded hover:bg-primary-700 flex items-center gap-1"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@
         </button>
       </div>
       
-      <div v-if="form.sections.length === 0" class="text-center py-8 text-dark-500">
+      <div v-if="form.sections && form.sections.length === 0" class="text-center py-8 text-dark-500">
         <p>هنوز بخشی اضافه نشده است. برای شروع روی "افزودن بخش" کلیک کنید.</p>
       </div>
       
@@ -456,7 +456,7 @@ watch(() => props.magazine, (magazine) => {
       ...magazine,
       sections: magazine.sections?.map(section => {
         // Transform products from pivot format to form format
-        const transformedProducts = section.products?.map(product => ({
+        const transformedProducts = section.products?.map((product: any) => ({
           product_id: product.id,
           title: product.pivot?.title || '',
           description: product.pivot?.description || '',
@@ -562,8 +562,8 @@ onMounted(async () => {
       fetchCategories(),
       fetchProducts()
     ])
-    console.log('Products loaded:', products.value)
-    console.log('Categories loaded:', categories.value)
+    console.log('Products loaded:', products)
+    console.log('Categories loaded:', categories)
   } catch (error) {
     console.error('Error loading data:', error)
   }

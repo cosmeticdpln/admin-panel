@@ -14,6 +14,10 @@ export interface AuthResponse {
   access_token: string
 }
 
+export interface ApiAuthResponse {
+  data: AuthResponse
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const token = ref<string | null>(localStorage.getItem('admin_token'))
@@ -29,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   const login = async (email: string, password: string) => {
     isLoading.value = true
     try {
-      const response = await axios.post<AuthResponse>('/api/v1/login', {
+      const response = await axios.post<ApiAuthResponse>('/api/v1/login', {
         email,
         password
       })
