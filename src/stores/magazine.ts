@@ -50,6 +50,7 @@ export interface Magazine {
   meta_data?: Record<string, any>
   published_at?: string
   sections?: MagazineSection[]
+  media?: MediaFile[]
   category?: {
     id: number
     name: string
@@ -72,6 +73,17 @@ export interface Product {
   price: string
   sku?: string
   description?: string
+}
+
+export interface MediaFile {
+  id: number
+  url: string
+  name: string
+  file_name: string
+  mime_type: string
+  size: number
+  collection: string
+  created_at?: string
 }
 
 export const useMagazineStore = defineStore('magazine', () => {
@@ -204,6 +216,29 @@ export const useMagazineStore = defineStore('magazine', () => {
     }
   }
 
+  const uploadMedia = async (file: File, fakeModelId?: number) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      if (fakeModelId) {
+        formData.append('fake_model_id', fakeModelId.toString())
+      }
+
+      const response = await axios.post('/api/v1/admin/media/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+        }
+      })
+
+      return response.data
+    } catch (err: any) {
+      console.error('Error uploading media:', err)
+      error.value = err.response?.data?.message || 'خطا در آپلود فایل'
+      throw err
+    }
+  }
+
   return {
     magazines,
     categories,
@@ -217,6 +252,7 @@ export const useMagazineStore = defineStore('magazine', () => {
     updateMagazine,
     deleteMagazine,
     fetchCategories,
-    fetchProducts
+    fetchProducts,
+    uploadMedia
   }
 })

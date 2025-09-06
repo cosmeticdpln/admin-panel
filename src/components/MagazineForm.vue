@@ -50,6 +50,55 @@
       </div>
     </div>
 
+    <!-- Featured Image Upload -->
+    <div class="bg-dark-800 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-white mb-4">تصویر شاخص</h3>
+      <div class="space-y-4">
+        <!-- Current Image Display -->
+        <div v-if="featuredImageUrl" class="relative">
+          <img
+            :src="featuredImageUrl"
+            alt="تصویر شاخص"
+            class="w-full max-w-md h-48 object-cover rounded-lg border border-dark-600"
+          />
+          <button
+            type="button"
+            @click="removeFeaturedImage"
+            class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Upload Button -->
+        <div class="flex items-center gap-4">
+          <input
+            ref="featuredImageInput"
+            type="file"
+            accept="image/*"
+            @change="handleFeaturedImageUpload"
+            class="hidden"
+          />
+          <button
+            type="button"
+            @click="() => featuredImageInput?.click()"
+            class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            {{ featuredImageUrl ? 'تغییر تصویر' : 'آپلود تصویر شاخص' }}
+          </button>
+
+          <div v-if="isUploadingFeaturedImage" class="text-sm text-dark-400">
+            در حال آپلود...
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Content -->
     <div class="bg-dark-800 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-white mb-4">محتوا</h3>
@@ -386,6 +435,12 @@ const { categories, products, fetchCategories, fetchProducts } = magazineStore
 
 const isLoading = ref(false)
 
+// Featured image state
+const featuredImageInput = ref<HTMLInputElement>()
+const featuredImageUrl = ref<string>('')
+const isUploadingFeaturedImage = ref(false)
+const fakeModelId = ref<number>()
+
 // Product search state
 const sectionProductSearch = ref<Record<string, string>>({})
 const filteredProducts = ref<Record<string, any[]>>({})
@@ -426,6 +481,41 @@ const toolbarConfig = [
   ['link']
 ]
 
+// Featured image upload handler
+const handleFeaturedImageUpload = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+
+  isUploadingFeaturedImage.value = true
+  try {
+    const result = await magazineStore.uploadMedia(file, fakeModelId.value)
+
+    if (result.success) {
+      if (result.fake_model_id) {
+        fakeModelId.value = result.fake_model_id
+      }
+      if (result.media) {
+        featuredImageUrl.value = result.media.url
+        form.featured_image = result.media.url
+      } else if (result.url) {
+        featuredImageUrl.value = result.url
+        form.featured_image = result.url
+      }
+    }
+  } catch (error) {
+    console.error('Featured image upload failed:', error)
+    alert('آپلود تصویر شاخص ناموفق بود')
+  } finally {
+    isUploadingFeaturedImage.value = false
+  }
+}
+
+const removeFeaturedImage = () => {
+  featuredImageUrl.value = ''
+  form.featured_image = ''
+  fakeModelId.value = undefined
+}
+
 // Custom image upload handler
 const handleImageUpload = async (sectionIndex?: number) => {
   const input = document.createElement('input')
@@ -438,9 +528,10 @@ const handleImageUpload = async (sectionIndex?: number) => {
     if (file) {
       try {
         const formData = new FormData()
-        formData.append('image', file)
+        formData.append('file', file)
 
-        const response = await axios.post('/api/v1/admin/upload-image', formData, {
+        const response = await axios.post('/api/v1/admin/media/upload', formData, {
+          params: { direct_upload: 1 },
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${authStore.token}`
@@ -508,6 +599,22 @@ watch(() => props.magazine, (magazine) => {
         }
       }) || []
     })
+
+    // Initialize featured image from media
+    if (magazine.media && magazine.media.length > 0) {
+      const featuredMedia = magazine.media.find(m => m.collection === 'magazine-images')
+      if (featuredMedia) {
+        featuredImageUrl.value = featuredMedia.url
+        form.featured_image = featuredMedia.url
+        console.log('Initialized featured image:', featuredMedia.url)
+      }
+    } else if (magazine.featured_image) {
+      // Fallback to featured_image field if media not loaded
+      featuredImageUrl.value = magazine.featured_image
+      form.featured_image = magazine.featured_image
+      console.log('Initialized featured image from field:', magazine.featured_image)
+    }
+
     console.log('Initialized form with magazine data:', form)
     console.log('Sections with products:', form.sections?.filter(s => s.products && s.products.length > 0))
   }
@@ -680,7 +787,8 @@ const handleSubmit = async () => {
         ...section,
         showProducts: undefined, // Remove this property
         products: section.products?.filter(p => p.product_id > 0) || []
-      }))
+      })),
+      fake_model_id: fakeModelId.value
     }
 
     console.log('Submitting magazine data:', submitData)

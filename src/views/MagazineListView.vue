@@ -82,6 +82,20 @@
         :key="magazine.id"
         class="bg-dark-800 rounded-lg overflow-hidden border border-dark-700 hover:border-dark-600 transition-colors"
       >
+        <!-- Featured Image -->
+        <div v-if="getFeaturedImageUrl(magazine)" class="h-48 bg-dark-700 overflow-hidden">
+          <img 
+            :src="getFeaturedImageUrl(magazine)" 
+            :alt="magazine.title"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div v-else class="h-48 bg-dark-700 flex items-center justify-center">
+          <svg class="w-12 h-12 text-dark-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+
         <div class="p-6">
           <div class="flex items-start justify-between">
             <div class="flex-1">
@@ -201,6 +215,23 @@ const applyFilters = () => {
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
+}
+
+const getFeaturedImageUrl = (magazine: any) => {
+  // First try to get from media collection
+  if (magazine.media && magazine.media.length > 0) {
+    const featuredMedia = magazine.media.find((m: any) => m.collection === 'magazine-images')
+    if (featuredMedia) {
+      return featuredMedia.url
+    }
+  }
+  
+  // Fallback to featured_image field
+  if (magazine.featured_image) {
+    return magazine.featured_image
+  }
+  
+  return null
 }
 
 const handleDelete = async (id: number) => {
