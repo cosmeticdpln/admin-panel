@@ -44,9 +44,15 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   
-  // Initialize auth if token exists
+  // Initialize auth if token exists but user is not loaded
   if (authStore.token && !authStore.user) {
-    await authStore.initializeAuth()
+    try {
+      await authStore.initializeAuth()
+    } catch (error) {
+      console.error('Auth initialization failed:', error)
+      // If auth fails, clear the token and redirect to login
+      authStore.logout()
+    }
   }
   
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

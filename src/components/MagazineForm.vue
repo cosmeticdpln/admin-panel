@@ -14,7 +14,7 @@
             placeholder="عنوان مجله را وارد کنید"
           />
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-dark-300 mb-2">نامک</label>
           <input
@@ -24,7 +24,7 @@
             placeholder="magazine-slug"
           />
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-dark-300 mb-2">دسته‌بندی</label>
           <select
@@ -37,7 +37,7 @@
             </option>
           </select>
         </div>
-        
+
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-dark-300 mb-2">خلاصه</label>
           <textarea
@@ -92,7 +92,7 @@
             />
             <span class="ml-2 text-sm text-dark-300">قابل مشاهده برای عموم</span>
           </label>
-          
+
           <label class="flex items-center">
             <input
               v-model="form.is_featured"
@@ -101,7 +101,7 @@
             />
             <span class="ml-2 text-sm text-dark-300">مجله ویژه</span>
           </label>
-          
+
           <label class="flex items-center">
             <input
               v-model="form.is_offerable"
@@ -111,7 +111,7 @@
             <span class="ml-2 text-sm text-dark-300">قابل پیشنهاد</span>
           </label>
         </div>
-        
+
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-dark-300 mb-2">ترتیب نمایش</label>
@@ -122,7 +122,7 @@
               class="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-dark-300 mb-2">تاریخ انتشار</label>
             <input
@@ -150,11 +150,11 @@
           افزودن بخش
         </button>
       </div>
-      
+
       <div v-if="form.sections && form.sections.length === 0" class="text-center py-8 text-dark-500">
         <p>هنوز بخشی اضافه نشده است. برای شروع روی "افزودن بخش" کلیک کنید.</p>
       </div>
-      
+
       <div v-else class="space-y-4">
         <div
           v-for="(section, index) in form.sections"
@@ -173,7 +173,7 @@
               </svg>
             </button>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-sm font-medium text-dark-300 mb-2">عنوان بخش *</label>
@@ -185,7 +185,7 @@
                 placeholder="عنوان بخش را وارد کنید"
               />
             </div>
-            
+
             <div>
               <label class="block text-sm font-medium text-dark-300 mb-2">نوع محتوا</label>
               <select
@@ -198,7 +198,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="mb-4">
             <label class="block text-sm font-medium text-dark-300 mb-2">محتوای بخش *</label>
             <div class="quill-editor-dark">
@@ -223,7 +223,7 @@
               />
             </div>
           </div>
-          
+
           <div class="flex justify-between items-center">
             <div>
               <label class="block text-sm font-medium text-dark-300 mb-2">ترتیب نمایش</label>
@@ -234,7 +234,7 @@
                 class="w-24 px-3 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
-            
+
             <button
               type="button"
               @click="toggleProductsSection(index)"
@@ -246,7 +246,7 @@
               {{ section.showProducts ? 'مخفی کردن' : 'مدیریت' }} محصولات
             </button>
           </div>
-          
+
           <!-- Products Section -->
           <div v-if="section.showProducts" class="mt-4 pt-4 border-t border-dark-600">
             <div class="flex justify-between items-center mb-4">
@@ -262,22 +262,51 @@
                 افزودن محصول
               </button>
             </div>
-            
+
+            <!-- Product Search -->
+            <div v-if="section.showProducts" class="mb-4">
+              <div class="flex gap-2 mb-3">
+                <input
+                  v-model="sectionProductSearch[section.id || index]"
+                  @input="searchProducts(String(section.id || index), ($event.target as HTMLInputElement).value)"
+                  type="text"
+                  placeholder="جستجوی محصول..."
+                  class="flex-1 px-3 py-2 bg-dark-700 border border-dark-600 rounded text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <button
+                  type="button"
+                  @click="clearProductSearch(String(section.id || index))"
+                  class="px-3 py-2 bg-dark-600 text-white rounded hover:bg-dark-500"
+                >
+                  پاک کردن
+                </button>
+              </div>
+
+              <!-- Search Results -->
+              <div v-if="sectionProductSearch[section.id || index] && filteredProducts[section.id || index]?.length > 0"
+                   class="max-h-40 overflow-y-auto border border-dark-600 rounded bg-dark-700 mb-3">
+                <div
+                  v-for="product in filteredProducts[section.id || index]"
+                  :key="product.id"
+                  @click="addProductToSectionFromSearch(index, product)"
+                  class="p-2 hover:bg-dark-600 cursor-pointer border-b border-dark-600 last:border-b-0"
+                >
+                  <div class="text-white text-sm font-medium">{{ product.name }}</div>
+                  <div class="text-dark-400 text-xs">{{ product.sku || 'بدون کد' }} - {{ product.price }} تومان</div>
+                </div>
+              </div>
+            </div>
+
             <div v-if="section.products && section.products.length > 0" class="space-y-2">
               <div
                 v-for="(product, productIndex) in section.products"
                 :key="productIndex"
                 class="flex items-center space-x-2 p-2 bg-dark-700 rounded"
               >
-                <select
-                  v-model="product.product_id"
-                  class="flex-1 px-3 py-2 bg-dark-600 border border-dark-500 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="">انتخاب محصول</option>
-                  <option v-for="productOption in products" :key="productOption.id" :value="productOption.id">
-                    {{ productOption.name }}
-                  </option>
-                </select>
+                <div class="flex-1">
+                  <div class="text-white text-sm font-medium">{{ getProductName(product.product_id, product) }}</div>
+                  <div class="text-dark-400 text-xs">{{ getProductSku(product.product_id, product) || 'بدون کد' }} - {{ getProductPrice(product.product_id, product) }} تومان</div>
+                </div>
                 <input
                   v-model="product.title"
                   type="text"
@@ -302,7 +331,7 @@
                 </button>
               </div>
             </div>
-            
+
             <div v-else class="text-center py-4 text-dark-500 text-sm">
               هنوز محصولی به این بخش اضافه نشده است.
             </div>
@@ -357,6 +386,11 @@ const { categories, products, fetchCategories, fetchProducts } = magazineStore
 
 const isLoading = ref(false)
 
+// Product search state
+const sectionProductSearch = ref<Record<string, string>>({})
+const filteredProducts = ref<Record<string, any[]>>({})
+const searchTimeout = ref<Record<string, number>>({})
+
 const form = reactive<Partial<Magazine>>({
   title: '',
   slug: '',
@@ -398,26 +432,26 @@ const handleImageUpload = async (sectionIndex?: number) => {
   input.setAttribute('type', 'file')
   input.setAttribute('accept', 'image/*')
   input.click()
-  
+
   input.onchange = async function() {
     const file = (this as HTMLInputElement).files?.[0]
     if (file) {
       try {
         const formData = new FormData()
         formData.append('image', file)
-        
+
         const response = await axios.post('/api/v1/admin/upload-image', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${authStore.token}`
           }
         })
-        
+
         if (response.data.success) {
           // Insert image into the correct editor
           const imageUrl = response.data.url
           let editor: HTMLElement | null = null
-          
+
           if (sectionIndex !== undefined) {
             // Find the section editor
             const sectionEditors = document.querySelectorAll('.ql-editor')
@@ -426,7 +460,7 @@ const handleImageUpload = async (sectionIndex?: number) => {
             // Find the main content editor
             editor = document.querySelector('.ql-editor') as HTMLElement
           }
-          
+
           if (editor) {
             const img = document.createElement('img')
             img.src = imageUrl
@@ -458,11 +492,15 @@ watch(() => props.magazine, (magazine) => {
         // Transform products from pivot format to form format
         const transformedProducts = section.products?.map((product: any) => ({
           product_id: product.id,
-          title: product.pivot?.title || '',
+          title: product.pivot?.title || product.name || '',
           description: product.pivot?.description || '',
-          sort_order: product.pivot?.sort_order || 0
+          sort_order: product.pivot?.sort_order || 0,
+          // Store full product data for display
+          product_name: product.name,
+          product_sku: product.sku || '',
+          product_price: product.price || '0'
         })) || []
-        
+
         return {
           ...section,
           showProducts: transformedProducts.length > 0, // Show products section if products exist
@@ -493,10 +531,10 @@ const removeSection = (index: number) => {
 const toggleProductsSection = (index: number) => {
   const section = form.sections![index]
   section.showProducts = !section.showProducts
-  
+
   console.log('Toggling products section:', index, 'showProducts:', section.showProducts)
   console.log('Current products:', section.products)
-  
+
   // If showing products section and no products exist, add one automatically
   if (section.showProducts && (!section.products || section.products.length === 0)) {
     console.log('Adding first product to section')
@@ -505,15 +543,19 @@ const toggleProductsSection = (index: number) => {
       product_id: 0,
       title: '',
       description: '',
-      sort_order: 0
+      sort_order: 0,
+      // Store empty product data for display
+      product_name: 'انتخاب محصول',
+      product_sku: '',
+      product_price: '0'
     }]
-    
+
     // Update the section with the new products array
     form.sections![index] = {
       ...section,
       products: newProducts
     }
-    
+
     console.log('Products after adding:', form.sections![index].products)
   }
 }
@@ -526,12 +568,106 @@ const addProductToSection = (sectionIndex: number) => {
     product_id: 0,
     title: '',
     description: '',
-    sort_order: form.sections![sectionIndex].products!.length
+    sort_order: form.sections![sectionIndex].products!.length,
+    // Store empty product data for display
+    product_name: 'انتخاب محصول',
+    product_sku: '',
+    product_price: '0'
   })
 }
 
 const removeProductFromSection = (sectionIndex: number, productIndex: number) => {
   form.sections![sectionIndex].products!.splice(productIndex, 1)
+}
+
+// Product search methods
+const searchProducts = async (sectionId: string, searchTerm: string) => {
+  // Clear previous timeout
+  if (searchTimeout.value[sectionId]) {
+    clearTimeout(searchTimeout.value[sectionId])
+  }
+
+  // If search term is empty, clear results
+  if (!searchTerm.trim()) {
+    filteredProducts.value[sectionId] = []
+    return
+  }
+
+  // Debounce search
+  searchTimeout.value[sectionId] = setTimeout(async () => {
+    try {
+      console.log('Searching products for section:', sectionId, 'with term:', searchTerm)
+      const response = await axios.get('/api/v1/admin/magazines/0/products', {
+        params: { search: searchTerm }
+      })
+      console.log('Search results:', response.data)
+      filteredProducts.value[sectionId] = response.data
+    } catch (error) {
+      console.error('Error searching products:', error)
+      filteredProducts.value[sectionId] = []
+    }
+  }, 300) // 300ms debounce
+}
+
+const clearProductSearch = (sectionId: string) => {
+  sectionProductSearch.value[sectionId] = ''
+  filteredProducts.value[sectionId] = []
+  if (searchTimeout.value[sectionId]) {
+    clearTimeout(searchTimeout.value[sectionId])
+  }
+}
+
+const addProductToSectionFromSearch = (sectionIndex: number, product: any) => {
+  // Check if product is already added
+  const existingProduct = form.sections![sectionIndex].products?.find(p => p.product_id === product.id)
+  if (existingProduct) {
+    alert('این محصول قبلاً اضافه شده است')
+    return
+  }
+
+  // Add product to section
+  if (!form.sections![sectionIndex].products) {
+    form.sections![sectionIndex].products = []
+  }
+
+  form.sections![sectionIndex].products!.push({
+    product_id: product.id,
+    title: product.name,
+    description: '',
+    sort_order: form.sections![sectionIndex].products!.length,
+    // Store full product data for display
+    product_name: product.name,
+    product_sku: product.sku || '',
+    product_price: product.price || '0'
+  })
+
+  // Clear search
+  clearProductSearch(form.sections![sectionIndex].id?.toString() || sectionIndex.toString())
+}
+
+// Helper methods to get product info
+const getProductName = (productId: number, productData?: any) => {
+  if (productData?.product_name) {
+    return productData.product_name
+  }
+  const product = products.find(p => p.id === productId)
+  return product?.name || 'محصول نامشخص'
+}
+
+const getProductSku = (productId: number, productData?: any) => {
+  if (productData?.product_sku) {
+    return productData.product_sku
+  }
+  const product = products.find(p => p.id === productId)
+  return product?.sku || ''
+}
+
+const getProductPrice = (productId: number, productData?: any) => {
+  if (productData?.product_price) {
+    return productData.product_price
+  }
+  const product = products.find(p => p.id === productId)
+  return product?.price || '0'
 }
 
 const handleSubmit = async () => {
@@ -546,10 +682,10 @@ const handleSubmit = async () => {
         products: section.products?.filter(p => p.product_id > 0) || []
       }))
     }
-    
+
     console.log('Submitting magazine data:', submitData)
     console.log('Sections with products being submitted:', submitData.sections?.filter(s => s.products && s.products.length > 0))
-    
+
     emit('submit', submitData)
   } finally {
     isLoading.value = false
@@ -562,8 +698,6 @@ onMounted(async () => {
       fetchCategories(),
       fetchProducts()
     ])
-    console.log('Products loaded:', products)
-    console.log('Categories loaded:', categories)
   } catch (error) {
     console.error('Error loading data:', error)
   }

@@ -17,6 +17,10 @@ export interface MagazineSectionProduct {
   title?: string
   description?: string
   sort_order: number
+  // Additional fields for display
+  product_name?: string
+  product_sku?: string
+  product_price?: string
 }
 
 export interface ApiProduct {
@@ -65,7 +69,9 @@ export interface Product {
   id: number
   name: string
   slug: string
-  price: number
+  price: string
+  sku?: string
+  description?: string
 }
 
 export const useMagazineStore = defineStore('magazine', () => {
@@ -77,12 +83,16 @@ export const useMagazineStore = defineStore('magazine', () => {
   const error = ref<string | null>(null)
 
   const fetchMagazines = async (params: Record<string, any> = {}) => {
+    console.log('fetchMagazines called with params:', params)
     isLoading.value = true
     error.value = null
     try {
       const response = await axios.get('/api/v1/admin/magazines', { params })
+      console.log('Magazines API response:', response.data)
       magazines.value = response.data.data || response.data
+      console.log('Magazines set to:', magazines.value)
     } catch (err: any) {
+      console.error('Error fetching magazines:', err)
       error.value = err.response?.data?.message || 'خطا در دریافت مجلات'
       throw err
     } finally {
@@ -186,7 +196,6 @@ export const useMagazineStore = defineStore('magazine', () => {
           params: { search }
         })
       }
-      console.log('Products API response:', response.data)
       products.value = response.data
     } catch (err: any) {
       console.error('Error fetching products:', err)

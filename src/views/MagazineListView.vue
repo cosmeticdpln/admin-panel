@@ -59,7 +59,7 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="isLoading" class="flex justify-center py-8">
+    <div v-if="isLoading || (authStore.token && !authStore.user)" class="flex justify-center py-8">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
     </div>
 
@@ -162,10 +162,12 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMagazineStore } from '@/stores/magazine'
+import { useAuthStore } from '@/stores/auth'
 import { useDebounceFn } from '@vueuse/core'
 
 const router = useRouter()
 const magazineStore = useMagazineStore()
+const authStore = useAuthStore()
 
 const { magazines, categories, isLoading, error, fetchMagazines, fetchCategories, deleteMagazine } = magazineStore
 
@@ -178,6 +180,15 @@ const filters = reactive({
 const debouncedSearch = useDebounceFn(() => {
   applyFilters()
 }, 500)
+
+// Watch for authentication changes and reload data
+watch(() => authStore.isAuthenticated, (isAuthenticated) => {
+  if (isAuthenticated && magazines.length === 0) {
+    console.log('Authentication state changed, reloading data...')
+    fetchMagazines()
+    fetchCategories()
+  }
+})
 
 const applyFilters = () => {
   const params: Record<string, any> = {}
@@ -203,9 +214,33 @@ const handleDelete = async (id: number) => {
 }
 
 onMounted(async () => {
-  await Promise.all([
-    fetchMagazines(),
-    fetchCategories()
-  ])
+  console.log('MagazineListView mounted, checking auth and loading data...')
+  
+  // Ensure authentication is initialized
+  if (authStore.token && !authStore.user) {
+    console.log('Initializing auth...')
+    await authStore.initializeAuth()
+  }
+  
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    console.log('User not authenticated, redirecting to login')
+    router.push('/login')
+    return
+  }
+  
+  try {
+    console.log('Loading magazines and categories...')
+    await Promise.all([
+      fetchMagazines(),
+      fetchCategories()
+    ])
+    console.log('Data loaded successfully:', { 
+      magazinesCount: magazines.length, 
+      categoriesCount: categories.length 
+    })
+  } catch (error) {
+    console.error('Error loading data on mount:', error)
+  }
 })
 </script>
