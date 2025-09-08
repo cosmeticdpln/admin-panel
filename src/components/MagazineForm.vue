@@ -435,7 +435,7 @@ const { categories, products, fetchCategories, fetchProducts } = magazineStore
 
 const isLoading = ref(false)
 
-// Featured image state
+// Featured image state (read-only from media)
 const featuredImageInput = ref<HTMLInputElement>()
 const featuredImageUrl = ref<string>('')
 const isUploadingFeaturedImage = ref(false)
@@ -451,7 +451,6 @@ const form = reactive<Partial<Magazine>>({
   slug: '',
   excerpt: '',
   content: '',
-  featured_image: '',
   is_visible: true,
   is_featured: false,
   is_offerable: false,
@@ -495,11 +494,9 @@ const handleFeaturedImageUpload = async (event: Event) => {
         fakeModelId.value = result.fake_model_id
       }
       if (result.media) {
-        featuredImageUrl.value = result.media.url
-        form.featured_image = result.media.url
+        featuredImageUrl.value = result.media.original_url || result.media.preview_url || result.media.url
       } else if (result.url) {
         featuredImageUrl.value = result.url
-        form.featured_image = result.url
       }
     }
   } catch (error) {
@@ -512,7 +509,6 @@ const handleFeaturedImageUpload = async (event: Event) => {
 
 const removeFeaturedImage = () => {
   featuredImageUrl.value = ''
-  form.featured_image = ''
   fakeModelId.value = undefined
 }
 
@@ -600,19 +596,13 @@ watch(() => props.magazine, (magazine) => {
       }) || []
     })
 
-    // Initialize featured image from media
+    // Initialize featured image from media only
     if (magazine.media && magazine.media.length > 0) {
-      const featuredMedia = magazine.media.find(m => m.collection === 'magazine-images')
+      const featuredMedia = magazine.media.find(m => (m.collection_name || (m as any).collection) === 'magazine-images')
       if (featuredMedia) {
-        featuredImageUrl.value = featuredMedia.url
-        form.featured_image = featuredMedia.url
+        featuredImageUrl.value = featuredMedia.original_url || featuredMedia.preview_url || (featuredMedia as any).url
         console.log('Initialized featured image:', featuredMedia.url)
       }
-    } else if (magazine.featured_image) {
-      // Fallback to featured_image field if media not loaded
-      featuredImageUrl.value = magazine.featured_image
-      form.featured_image = magazine.featured_image
-      console.log('Initialized featured image from field:', magazine.featured_image)
     }
 
     console.log('Initialized form with magazine data:', form)

@@ -218,19 +218,12 @@ const formatDate = (dateString: string) => {
 }
 
 const getFeaturedImageUrl = (magazine: any) => {
-  // First try to get from media collection
   if (magazine.media && magazine.media.length > 0) {
-    const featuredMedia = magazine.media.find((m: any) => m.collection === 'magazine-images')
+    const featuredMedia = magazine.media.find((m: any) => (m.collection_name || m.collection) === 'magazine-images')
     if (featuredMedia) {
-      return featuredMedia.url
+      return featuredMedia.original_url || featuredMedia.preview_url || featuredMedia.url || null
     }
   }
-  
-  // Fallback to featured_image field
-  if (magazine.featured_image) {
-    return magazine.featured_image
-  }
-  
   return null
 }
 

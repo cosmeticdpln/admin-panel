@@ -41,7 +41,6 @@ export interface Magazine {
   slug: string
   excerpt?: string
   content: string
-  featured_image?: string
   is_visible: boolean
   is_featured: boolean
   is_offerable: boolean
@@ -77,13 +76,20 @@ export interface Product {
 
 export interface MediaFile {
   id: number
-  url: string
-  name: string
-  file_name: string
+  // API fields
+  original_url?: string
+  preview_url?: string
+  collection_name?: string
+  disk?: string
+  conversions_disk?: string
   mime_type: string
   size: number
-  collection: string
+  name: string
+  file_name: string
   created_at?: string
+  // Legacy/compat fields (some endpoints may still send these)
+  url?: string
+  collection?: string
 }
 
 export const useMagazineStore = defineStore('magazine', () => {
